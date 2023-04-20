@@ -1,4 +1,9 @@
-from gb_blog.app import app
+from gb_blog.app import create_app
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", debug=True, port=5010)
+if __name__ == "__main__":
+    app = create_app()
+    app.run(
+        host="0.0.0.0",
+        port=8000,
+        debug=True
+    )
