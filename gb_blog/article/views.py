@@ -1,5 +1,5 @@
-from django.shortcuts import redirect
-from flask import Blueprint, render_template
+
+from flask import Blueprint, render_template, redirect
 
 article = Blueprint('article', __name__, url_prefix='/articles', static_folder='../static')
 
