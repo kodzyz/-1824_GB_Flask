@@ -47,7 +47,7 @@ def get_article(pk: int):
         # raise NotFound(f'Article id {pk} not found')
         return redirect('/articles/')
     return render_template(
-        'articles/details.html',
+        'articles/profile.html',
         article_context=article_context,
     )
 
