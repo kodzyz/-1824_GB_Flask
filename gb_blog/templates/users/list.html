@@ -11,7 +11,7 @@ Users List
         <h1>Users:</h1>
         {% for user in users %}
         <ul>
-            <li><a href=" {{ url_for('user.profile', pk=user.id) }} "> {{ user.email }} </a></li>
+            <li><a href=" {{ url_for('user.profile', pk=user.id) }} "> {{ user.name }} </a></li>
         </ul>
         {% endfor %}
     </div>

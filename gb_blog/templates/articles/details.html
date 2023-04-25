@@ -6,8 +6,8 @@
 {% endblock %}
 
 {% block body %}
-    <h4> {{article_context.title}} </h4>
-    <p> {{article_context.text}} </p><br>
-    <p> <a href="{{ url_for('user.get_user', pk=article_context.author.id) }}"> {{article_context.author.name}} </a> </p><br>
+    <h4> {{article.title}} </h4>
+    <p> {{article.text}} </p><br>
+    <p> <a href="{{ url_for('user.profile', pk=article.id) }}"> {{article.author}} </a> </p><br>
 
 {% endblock %}

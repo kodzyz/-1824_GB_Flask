@@ -1,5 +1,5 @@
-
 from flask import Blueprint, render_template, redirect
+from werkzeug.exceptions import NotFound
 
 article = Blueprint('article', __name__, url_prefix='/articles', static_folder='../static')
 
@@ -33,21 +33,22 @@ ARTICLES = {
 
 @article.route('/')
 def article_list():
+    from gb_blog.models import Article
+    articles = Article.query.all()
     return render_template(
         'articles/list.html',
-        articles=ARTICLES,
+        articles=articles,
     )
 
 
 @article.route('/<int:pk>')
 def get_article(pk: int):
-    try:
-        article_context = ARTICLES[pk]
-    except KeyError:
-        # raise NotFound(f'Article id {pk} not found')
-        return redirect('/articles/')
+    from gb_blog.models import Article
+    _article = Article.query.filter_by(id=pk).one_or_none()
+    if _article is None:
+        raise NotFound(f'Article id:{pk} not found')
     return render_template(
-        'articles/profile.html',
-        article_context=article_context,
+        'articles/details.html',
+        article=_article,
     )
 
