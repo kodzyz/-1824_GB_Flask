@@ -1,28 +1,26 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-from flask_login import logout_user, login_user, login_required
+from flask_login import logout_user, login_user, login_required, current_user
 from werkzeug.security import check_password_hash
+from gb_blog.models import User
 
-auth = Blueprint('auth', __name__, url_prefix="/auth", static_folder='../static')
+auth = Blueprint('auth', __name__, static_folder='../static')
 
 
-@auth.route('/login', methods=['POST', 'GET'])
+@auth.route('/login', methods=('GET',))
 def login():
-    if request.method == 'GET':
-        # то рисуем шаблон
-        return render_template(
-            'auth/login.html',
-        )
-    # elif request.method == 'POST':
-    # получаем данные из формы
-    # <input type="text" class="form-control" name="email">
-    from gb_blog.models import User
-    email = request.form.get('email')
-    # print(email)
-    #  <input type="password" class="form-control" name="password">
-    password = request.form.get('password')
-    # print(password)
+    if current_user.is_authenticated:
+        return redirect(url_for('user.profile', pk=current_user.id))
 
-    # найдем пользователя по 'email'
+    return render_template(
+        'auth/login.html',
+    )
+
+
+@auth.route('/login', methods=('POST',))
+def login_post():
+    email = request.form.get('email')
+    password = request.form.get('password')
+
     user = User.query.filter_by(email=email).first()
 
     if not user or not check_password_hash(user.password, password):
