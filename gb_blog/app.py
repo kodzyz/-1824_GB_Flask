@@ -1,6 +1,6 @@
 from flask import Flask
 
-from gb_blog.extensions import db, login_manager, migrate
+from gb_blog.extensions import db, login_manager, migrate, csrf
 from gb_blog import commands
 from gb_blog.models import User
 from gb_blog.auth.views import auth
@@ -29,6 +29,7 @@ def create_app() -> Flask:
 def register_extensions(app):
     db.init_app(app)
     migrate.init_app(app, db, compare_type=True)
+    csrf.init_app(app)
     # какая страница является логином
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
