@@ -6,6 +6,14 @@
 {% endblock %}
 
 {% block body %}
-    <h4> {{ user.first_name }} {{ user.last_name }} </h4>
+    <h3>Hi, {{ user.first_name }} {{ user.last_name }} </h3>
     <p>{{user.about}}</p>
+    <h3>Author of article:</h3>
+    {% for article in user.author.articles %}
+        <ul>
+            <li>
+                <a href="{{ url_for('article.article_detail', article_id=article.id) }}">{{ article.title }}</a>
+            </li>
+        </ul>
+    {% endfor %}
 {% endblock %}

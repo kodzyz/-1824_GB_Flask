@@ -84,3 +84,16 @@ def create_articles():
             )
         )
         db.session.commit()
+
+
+@click.command('create-init-tags', help="create tags")
+def create_init_tags():
+    from gb_blog.models import Tag
+    from wsgi import app
+
+    with app.app_context():
+        tags = ('flask', 'django', 'python', 'gb', 'sqlite')
+        for item in tags:
+            db.session.add(Tag(name=item))
+        db.session.commit()
+    click.echo(f'Created tags: {", ".join(tags)}')

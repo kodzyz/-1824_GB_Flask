@@ -1,9 +1,16 @@
 from flask_login import UserMixin
 
 from gb_blog.app import db
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Table
 from sqlalchemy.orm import relationship
 from datetime import datetime
+
+article_tag_associations_table = Table(
+    'article_tag_association',
+    db.metadata,
+    db.Column('article_id', db.Integer, ForeignKey('articles.id'), nullable=False),
+    db.Column('tag_id', db.Integer, ForeignKey('tags.id'), nullable=False),
+)
 
 
 class User(db.Model, UserMixin):
@@ -36,6 +43,7 @@ class Article(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     author_id = db.Column(db.Integer, ForeignKey('authors.id'), nullable=False)
+    tags = relationship('Tag', secondary=article_tag_associations_table, back_populates='articles')
 
     def __init__(self, title, text):
         self.title = title
@@ -50,3 +58,12 @@ class Author(db.Model):
 
     user = relationship('User', back_populates='author')
     articles = relationship('Article', back_populates='author')
+
+
+class Tag(db.Model):
+    __tablename__ = 'tags'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+
+    articles = relationship('Article', secondary=article_tag_associations_table, back_populates='tags')
