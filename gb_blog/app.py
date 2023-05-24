@@ -1,6 +1,5 @@
 from flask import Flask
-
-from gb_blog.extensions import db, login_manager, migrate, csrf
+from gb_blog.extensions import db, login_manager, migrate, csrf, admin
 from gb_blog import commands
 from gb_blog.models import User
 
@@ -21,6 +20,7 @@ def register_extensions(app):
     db.init_app(app)
     migrate.init_app(app, db, compare_type=True)
     csrf.init_app(app)
+    admin.init_app(app)
     # какая страница является логином
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
@@ -36,11 +36,14 @@ def register_blueprint(app: Flask):
     from gb_blog.user.views import user
     from gb_blog.articles.views import article
     from gb_blog.author.views import author
+    from gb_blog import admin
 
     app.register_blueprint(user)
     app.register_blueprint(auth)
     app.register_blueprint(article)
     app.register_blueprint(author)
+
+    admin.register_views()
 
 
 def register_commands(app: Flask):
