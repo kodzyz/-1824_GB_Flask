@@ -1,4 +1,6 @@
 from combojsonapi.spec import ApiSpecPlugin
+from combojsonapi.event import EventPlugin
+from combojsonapi.permission import PermissionPlugin
 from flask import Flask
 
 from gb_blog.extensions import db, login_manager, migrate, csrf, admin, api
@@ -26,6 +28,8 @@ def register_extensions(app):
     admin.init_app(app)
 
     api.plugins = [
+        EventPlugin(),
+        PermissionPlugin(),
         ApiSpecPlugin(
             app=app,
             tags={
@@ -41,6 +45,10 @@ def register_extensions(app):
     # какая страница является логином
     login_manager.login_view = 'auth.login'
     login_manager.init_app(app)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
 
 
 def register_api(app: Flask):
@@ -60,10 +68,6 @@ def register_api(app: Flask):
 
     api.route(ArticleList, 'article_list', '/api/articles/', tag='Article')
     api.route(ArticleDetail, 'article_detail', '/api/articles/<int:id>', tag='Article')
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
 
 
 def register_blueprint(app: Flask):
@@ -85,5 +89,5 @@ def register_blueprint(app: Flask):
 def register_commands(app: Flask):
     app.cli.add_command(commands.init_db)
     app.cli.add_command(commands.create_users)
-    app.cli.add_command(commands.create_articles)
+    # app.cli.add_command(commands.create_articles)
     app.cli.add_command(commands.create_init_tags)
